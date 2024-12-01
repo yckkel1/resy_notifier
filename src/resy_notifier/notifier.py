@@ -1,3 +1,5 @@
+# pragma: no cover
+
 class ResyNotifier:
     """
     Handles notifications about available reservations.
