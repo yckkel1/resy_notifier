@@ -1,18 +1,15 @@
-from dotenv import load_dotenv
-import os
-import httpx
 from datetime import datetime, timedelta
+import httpx
+from model.availability import parse_response
 
 class ResyAPIClient:
-    def __init__(self):
-        # Load environment variables
-        load_dotenv()
-        self.api_key = os.getenv("RESY_API_KEY")
-        self.base_url = os.getenv("BASE_URL")
+    def __init__(self, api_key=None, base_url=None):
+        self.api_key = api_key
+        self.base_url = base_url
         if not self.api_key:
-            raise ValueError("API key is missing. Set RESY_API_KEY in your .env file.")
+            raise ValueError("API key is required.")
         if not self.base_url:
-            raise ValueError("Base URL is missing. Set BASE_URL in your .env file.")
+            raise ValueError("Base URL is required.")
 
     def get_availability(self, venue_id, start_date=None, end_date=None):
         """
@@ -47,6 +44,19 @@ class ResyAPIClient:
             "start_date": start_date,
             "end_date": end_date,
         }
-        response = httpx.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Raise error if response code isn't 2xx
-        return response.json()
+
+        try:
+            response = httpx.get(url, headers=headers, params=params)
+            response.raise_for_status()
+
+            # Parse the response
+            return parse_response(response.json())
+
+        except httpx.RequestError as e:
+            raise ValueError(f"Network error occurred: {e}")
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 404:
+                raise ValueError(f"Venue ID {venue_id} not found.")
+            raise ValueError(f"HTTP error occurred: {e}")
+        except ValueError as e:
+            raise ValueError(f"Error parsing response: {e}")
