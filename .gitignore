@@ -16,10 +16,5 @@ Thumbs.db
 # PyTest
 pytest.ini
 
-# PyTest Coverage
-coverage_reports/
-.coverage
-.coveragerc
-
 # Environment Variables
 .env
