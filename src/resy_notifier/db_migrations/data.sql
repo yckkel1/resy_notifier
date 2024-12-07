@@ -1,0 +1,6 @@
+INSERT INTO t_api_keys (API_KEY, EFFECTIVE_DATE, TERMINATED_DATE, MODIFIED_DATETIME) VALUES
+('VbWk7s3L4KiK5fzlO7JD3Q5EYolJI7n5', '2024-12-01', NULL, NOW());
+
+INSERT INTO t_venue (VENUE_ID, VENUE_NAME, URL_NAME, EFFECTIVE_DATE) VALUES
+(6066, 'Una Pizza Napoletana', 'una-pizza-napoletana', CURDATE()),
+(2492, 'The Four Horsemen', 'the-four-horsemen', CURDATE());

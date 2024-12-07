@@ -11,7 +11,7 @@ class ResyAPIClient:
         if not self.base_url:
             raise ValueError("Base URL is required.")
 
-    def get_availability(self, venue_id, start_date=None, end_date=None):
+    def get_availability(self, venue_id, party_size=2, start_date=None, end_date=None):
         """
         Fetch availability for a venue within a date range.
 
@@ -40,7 +40,7 @@ class ResyAPIClient:
         url = f"{self.base_url}/venue/calendar"
         params = {
             "venue_id": venue_id,
-            "num_seats": 2,
+            "num_seats": party_size,
             "start_date": start_date,
             "end_date": end_date,
         }
