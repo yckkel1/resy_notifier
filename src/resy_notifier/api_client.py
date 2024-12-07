@@ -1,17 +1,19 @@
 from datetime import datetime, timedelta
 import httpx
 from model.availability import parse_response
+from email_helper import EmailHelper
 
 class ResyAPIClient:
     def __init__(self, api_key=None, base_url=None):
         self.api_key = api_key
         self.base_url = base_url
+        self.email_helper = EmailHelper()
         if not self.api_key:
             raise ValueError("API key is required.")
         if not self.base_url:
             raise ValueError("Base URL is required.")
 
-    def get_availability(self, venue_id, party_size=2, start_date=None, end_date=None):
+    def get_availability(self, venue_id, venue_name="", party_size=2, start_date=None, end_date=None):
         """
         Fetch availability for a venue within a date range.
 
@@ -50,7 +52,9 @@ class ResyAPIClient:
             response.raise_for_status()
 
             # Parse the response
-            return parse_response(response.json())
+            availability = parse_response(response.json())
+            self.email_helper.check_and_notify_availability(venue_name, availability)
+            return availability
 
         except httpx.RequestError as e:
             raise ValueError(f"Network error occurred: {e}")
