@@ -1,5 +1,5 @@
 import unittest
-from model.availability import Availability, Inventory, parse_response
+from model.availability import Availability, Inventory, parse_response, get_available_days
 
 class TestAvailability(unittest.TestCase):
     def setUp(self):
@@ -106,6 +106,41 @@ class TestAvailability(unittest.TestCase):
             str(context.exception),
             "Invalid response format: Missing 'date' or 'inventory' key.",
         )
+
+    def test_get_available_days_with_availabilities(self):
+        """
+        Test `get_available_days` when there are available days.
+        """
+        availabilities = [
+            Availability(date="2024-12-01", inventory=Inventory("available", "not available", "available")),
+            Availability(date="2024-12-02", inventory=Inventory("sold-out", "not available", "not available")),
+            Availability(date="2024-12-03", inventory=Inventory("available", "event available", "walk-in available")),
+        ]
+
+        expected = [
+            "Date: 2024-12-01\n- Reservation: available\n- Event: not available\n- Walk-in: available\n",
+            "Date: 2024-12-03\n- Reservation: available\n- Event: event available\n- Walk-in: walk-in available\n"
+        ]
+
+        self.assertEqual(get_available_days(availabilities), expected)
+
+    def test_get_available_days_no_availability(self):
+        """
+        Test `get_available_days` when there are no available days.
+        """
+        availabilities = [
+            Availability(date="2024-12-01", inventory=Inventory("sold-out", "not available", "available")),
+            Availability(date="2024-12-02", inventory=Inventory("closed", "not available", "not available")),
+        ]
+
+        self.assertEqual(get_available_days(availabilities), [])
+
+    def test_get_available_days_empty_list(self):
+        """
+        Test `get_available_days` when the availabilities list is empty.
+        """
+        availabilities = []
+        self.assertEqual(get_available_days(availabilities), [])
 
 
 if __name__ == "__main__":

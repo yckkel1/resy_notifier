@@ -53,6 +53,7 @@ class ResyAPIClient:
 
             # Parse the response
             availability = parse_response(response.json())
+            print(availability)
             self.email_helper.check_and_notify_availability(venue_name, availability)
             return availability
 

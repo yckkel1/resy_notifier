@@ -45,7 +45,7 @@ class DatabaseManager:
 
     def get_venue_info(self, url_name: str) -> tuple:
         """
-        Retrieve the venue ID for a given venue name.
+        Retrieve the venue info for a given venue.
 
         Args:
             url_name (str): The venue name in url format. example: una-pizza-napoletana

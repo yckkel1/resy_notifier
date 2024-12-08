@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 from dotenv import load_dotenv
-from model.availability import Availability
+from model.availability import Availability, get_available_days
 
 
 class EmailHelper:
@@ -19,12 +19,14 @@ class EmailHelper:
         self.sender_password = os.getenv("SENDER_PASSWORD")
         self.recipient_email = os.getenv("RECIPIENT_EMAIL")
 
-        if not self.sender_email or not self.sender_password:
+        if not self.sender_email or not self.sender_password or not self.recipient_email:
             raise ValueError("Email credentials are not set in environment variables.")
 
         # SMTP server configuration (Gmail in this example)
-        self.smtp_server = "smtp.gmail.com"
-        self.smtp_port = 587
+        self.smtp_server = os.getenv("SMTP_SERVER")
+        self.smtp_port = os.getenv("SMTP_PORT")
+        if not self.smtp_server or not self.smtp_server:
+            raise ValueError("SMTP Configuration is not set in environment variables.")
 
     def send_email(self, subject: str, body: str):
         """
@@ -60,23 +62,15 @@ class EmailHelper:
         except Exception as e:
             raise Exception(f"Error sending email: {e}")
 
-    def check_and_notify_availability(self, venue_name: str, availability: list[Availability]):
+    def check_and_notify_availability(self, venue_name: str, availabilities: list[Availability]):
         """
         Check availability in the calendar and send email notifications if available.
 
         Args:
             venue_name (str): The name of the venue.
-            availability (list<Availability>): The parsed availability data returned by the API.
+            availabilities (list<Availability>): The parsed availability data returned by the API.
         """
-        available_days = []
-        for day in availability:
-            if day.inventory.reservation == "available":  # Use dot notation for object attributes
-                available_days.append(
-                    f"Date: {day.date}\n"
-                    f"- Reservation: {day.inventory.reservation}\n"
-                    f"- Event: {day.inventory.event}\n"
-                    f"- Walk-in: {day.inventory.walk_in}\n"
-                )
+        available_days = get_available_days(availabilities)
 
         # If no days are available, do nothing
         if not available_days:
