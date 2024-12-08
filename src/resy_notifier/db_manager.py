@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from constants.queries import GET_ACTIVE_API_KEY
+from constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
 
 class DatabaseManager:
     def __init__(self):
@@ -23,7 +23,7 @@ class DatabaseManager:
             print(f"Error connecting to the database: {e}")
             raise
 
-    def get_active_api_key(self):
+    def get_active_api_key(self) -> str:
         """
         Retrieve the most recent active API key.
 
@@ -42,3 +42,27 @@ class DatabaseManager:
         except mysql.connector.Error as e:
             print(f"Database error occurred: {e}")
             raise
+
+    def get_venue_info(self, url_name: str) -> tuple:
+        """
+        Retrieve the venue info for a given venue.
+
+        Args:
+            url_name (str): The venue name in url format. example: una-pizza-napoletana
+
+        Returns:
+            tuple: (venue_id: int, venue_name: str)
+
+        Raises:
+            ValueError: If no venue is found with the given name.
+        """
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(GET_VENUE_INFO, (url_name,))
+                result = cursor.fetchone()
+                if not result:
+                    raise ValueError(f"Venue '{url_name}' not found in the database.")
+                return result
+        except mysql.connector.Error as e:
+            raise e

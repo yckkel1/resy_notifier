@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, Mock
 from db_manager import DatabaseManager
 from mysql.connector import Error as MySQLError
-from constants.queries import GET_ACTIVE_API_KEY
+from constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
 
 class TestDatabaseManager:
     @patch("mysql.connector.connect")
@@ -68,3 +68,50 @@ class TestDatabaseManager:
 
         # Ensure the connection was attempted
         mock_connect.assert_called_once()
+
+    @patch("mysql.connector.connect")
+    def test_get_venue_info_success(self, mock_connect):
+        """Test retrieving an active API key successfully."""
+        # Mock connection and cursor
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value.__enter__.return_value = mock_conn
+
+        # Mock the query result
+        mock_cursor.fetchone.return_value = (123, "test venue")
+
+        # Instantiate the database manager
+        db_manager = DatabaseManager()
+
+        # Call the method
+        api_key = db_manager.get_venue_info("test-venue")
+
+        # Assertions
+        mock_connect.assert_called_once()  # Ensure the connection was made
+        mock_cursor.execute.assert_called_once_with(GET_VENUE_INFO, ("test-venue",))
+        mock_cursor.fetchone.assert_called_once()
+
+    @patch("mysql.connector.connect")
+    def test_get_venue_info_not_found(self, mock_connect):
+        """Test retrieving an API key when none are active."""
+        # Mock connection and cursor
+        mock_conn = Mock()
+        mock_cursor = Mock()
+        mock_conn.cursor.return_value = mock_cursor
+        mock_connect.return_value.__enter__.return_value = mock_conn
+
+        # Mock no results
+        mock_cursor.fetchone.return_value = None
+
+        # Instantiate the database manager
+        db_manager = DatabaseManager()
+
+        # Call the method and expect a ValueError
+        with pytest.raises(ValueError, match="Venue 'test-venue' not found in the database."):
+            db_manager.get_venue_info("test-venue")
+
+        # Assertions
+        mock_connect.assert_called_once()  # Ensure the connection was made
+        mock_cursor.execute.assert_called_once_with(GET_VENUE_INFO, ("test-venue",))
+        mock_cursor.fetchone.assert_called_once()

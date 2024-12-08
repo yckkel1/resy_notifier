@@ -48,3 +48,15 @@ def parse_response(data: dict) -> List[Availability]:
         availability = Availability(date=item["date"], inventory=inventory)
         availability_list.append(availability)
     return availability_list
+
+def get_available_days(availabilities: list[Availability]) -> list[str] :
+    available_days = []
+    for day in availabilities:
+        if day.inventory.reservation == "available":  # Use dot notation for object attributes
+            available_days.append(
+                f"Date: {day.date}\n"
+                f"- Reservation: {day.inventory.reservation}\n"
+                f"- Event: {day.inventory.event}\n"
+                f"- Walk-in: {day.inventory.walk_in}\n"
+            )
+    return available_days

@@ -42,8 +42,7 @@ These files provide:
     - Execute `table.sql` to create or update the `api_keys` table.
 
 3. **Maintaining Updates**:
-    - For new changes, add additional `.sql` files in this folder.
-    - Name the files with a clear and consistent convention, such as `YYYYMMDD.data.sql`.
+    - For new changes, update `data.sql`.
 
 ## Notes
 
