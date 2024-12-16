@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch, Mock
-from email_helper import EmailHelper
-from model.availability import Availability, Inventory
+from src.resy_notifier.email_helper import EmailHelper
+from src.resy_notifier.model.availability import Availability, Inventory
 
 
 class TestEmailHelper(unittest.TestCase):
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -24,7 +24,7 @@ class TestEmailHelper(unittest.TestCase):
         self.assertEqual(email_helper.smtp_server, "smtp.example.com")
         self.assertEqual(email_helper.smtp_port, "587")
 
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -39,7 +39,7 @@ class TestEmailHelper(unittest.TestCase):
             EmailHelper()
         self.assertIn("Email credentials are not set in environment variables.", str(context.exception))
 
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -55,7 +55,7 @@ class TestEmailHelper(unittest.TestCase):
         self.assertIn("SMTP Configuration is not set in environment variables.", str(context.exception))
 
     @patch("smtplib.SMTP")
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -82,7 +82,7 @@ class TestEmailHelper(unittest.TestCase):
         mock_server.login.assert_called_once_with("sender@example.com", "password")
         mock_server.send_message.assert_called_once()
 
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -101,7 +101,7 @@ class TestEmailHelper(unittest.TestCase):
         self.assertIn("Subject and Body are required.", str(context.exception))
 
     @patch("smtplib.SMTP")
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",
@@ -133,7 +133,7 @@ class TestEmailHelper(unittest.TestCase):
         mock_server.send_message.assert_called_once()
 
     @patch("smtplib.SMTP")
-    @patch("email_helper.load_dotenv")
+    @patch("src.resy_notifier.email_helper.load_dotenv")
     @patch.dict("os.environ", {
         "SENDER_EMAIL": "sender@example.com",
         "SENDER_PASSWORD": "password",

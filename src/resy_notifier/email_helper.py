@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
 from dotenv import load_dotenv
-from model.availability import Availability, get_available_days
+from src.resy_notifier.model.availability import Availability, get_available_days
 
 
 class EmailHelper:

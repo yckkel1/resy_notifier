@@ -1,5 +1,5 @@
 import unittest
-from model.availability import Availability, Inventory, parse_response, get_available_days
+from src.resy_notifier.model.availability import Availability, Inventory, parse_response, get_available_days
 
 class TestAvailability(unittest.TestCase):
     def setUp(self):

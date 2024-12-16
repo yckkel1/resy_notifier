@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
+from src.resy_notifier.constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
 
 class DatabaseManager:
     def __init__(self):

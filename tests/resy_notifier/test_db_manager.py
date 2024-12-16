@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch, Mock
-from db_manager import DatabaseManager
+from src.resy_notifier.db_manager import DatabaseManager
 from mysql.connector import Error as MySQLError
-from constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
+from src.resy_notifier.constants.queries import GET_ACTIVE_API_KEY, GET_VENUE_INFO
 
 class TestDatabaseManager:
     @patch("mysql.connector.connect")

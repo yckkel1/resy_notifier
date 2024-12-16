@@ -23,3 +23,6 @@ coverage_reports/
 
 # Environment Variables
 .env
+
+# Logging
+logs/
