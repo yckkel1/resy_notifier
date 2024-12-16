@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import httpx
-from model.availability import parse_response
-from email_helper import EmailHelper
+from src.resy_notifier.model.availability import parse_response
+from src.resy_notifier.email_helper import EmailHelper
 
 class ResyAPIClient:
     def __init__(self, api_key=None, base_url=None):

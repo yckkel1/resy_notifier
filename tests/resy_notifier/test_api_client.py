@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch, Mock
-from api_client import ResyAPIClient
-from model.availability import Availability
+from src.resy_notifier.api_client import ResyAPIClient
+from src.resy_notifier.model.availability import Availability
 import httpx
 
 class TestResyAPIClient:
